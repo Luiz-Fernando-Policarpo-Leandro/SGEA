@@ -1,0 +1,25 @@
+{
+  "name": "sgea",
+  "version": "1.0.0",
+  "description": "o Sistema de Gerenciamento de Eventos Acadêmicos. O objetivo principal deste software é centralizar e automatizar todo o ciclo de vida de eventos educacionais. O escopo abrange desde a etapa inicial de criação e governança pela instituição promotora até a fase final de emissão de certificados validados. O sistema assegura a integridade dos dados processados. Além disso, permite rastrear e auditar todas as ações.",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.7.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  }
+}
