@@ -1,0 +1,1 @@
+{"version":3,"file":"participante.entity.d.ts","sourceRoot":"","sources":["../../../src/domain/entities/participante.entity.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,YAAY;IAC3B,UAAU,EAAE,MAAM,CAAA;IAClB,SAAS,EAAE,MAAM,CAAA;CAClB;AAED,MAAM,WAAW,oBAAqB,SAAQ,YAAY;IACxD,IAAI,EAAE,MAAM,CAAA;IACZ,KAAK,EAAE,MAAM,CAAA;CACd"}

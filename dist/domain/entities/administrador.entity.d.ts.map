@@ -1,0 +1,1 @@
+{"version":3,"file":"administrador.entity.d.ts","sourceRoot":"","sources":["../../../src/domain/entities/administrador.entity.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,aAAa;IAC5B,UAAU,EAAE,MAAM,CAAA;CACnB;AAED,MAAM,WAAW,qBAAsB,SAAQ,aAAa;IAC1D,IAAI,EAAE,MAAM,CAAA;IACZ,KAAK,EAAE,MAAM,CAAA;CACd"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"atividade.entity.d.ts","sourceRoot":"","sources":["../../../src/domain/entities/atividade.entity.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,SAAS;IACxB,EAAE,EAAE,MAAM,CAAA;IACV,MAAM,EAAE,MAAM,CAAA;IACd,YAAY,CAAC,EAAE,MAAM,CAAA;IACrB,KAAK,CAAC,EAAE,MAAM,CAAA;IACd,KAAK,CAAC,EAAE,MAAM,CAAA;IACd,SAAS,EAAE,MAAM,CAAA;CAClB"}

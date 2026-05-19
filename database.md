@@ -1,11 +1,12 @@
-# Relatório do Banco de Dados - Sistema de Gestão de Eventos Acadêmicos (SGEA)
+# Relatorio do Banco de Dados - Sistema de Gestao de Eventos Academicos (SGEA)
 
-## 1. Visão Geral
+## 1. Visao Geral
 
-O banco de dados **sistema_eventos** é projetado para gerenciar eventos acadêmicos, incluindo controle de usuários (participantes, coordenadores e administradores), eventos, atividades, inscrições, presenças e certificados.
+O banco de dados **sistema_eventos** e projetado para gerenciar eventos academicos, incluindo controle de usuarios (participantes, coordenadores e administradores), eventos, atividades, inscricoes, presencas e certificados.
 
 **SGBD:** PostgreSQL  
-**Encoding:** UTF8
+**Encoding:** UTF8  
+**Modelo de heranca:** Tabela pai `Usuario` + tabelas filhas + `VIEW vw_usuario_tipo` para calculo dinamico do tipo
 
 ---
 
@@ -29,7 +30,6 @@ erDiagram
         string nome
         string email UK
         string senha
-        string tipo
     }
 
     Participante {
@@ -122,101 +122,141 @@ flowchart TD
 
 ---
 
-## 4. Descrição das Tabelas
+## 4. Descricao das Tabelas
 
 ### 4.1 Usuario (Tabela Pai)
-Tabela base para o sistema de herança de usuários.
 
-| Coluna | Tipo | Restrição | Descrição |
+Tabela base para o sistema de heranca de usuarios. **Nao possui campo `tipo`** — o tipo e calculado dinamicamente pela view `vw_usuario_tipo` baseada na existencia do registro na tabela filha correspondente.
+
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| id | SERIAL | PK | Identificador único (auto-incremento) |
-| nome | VARCHAR(255) | NOT NULL | Nome completo do usuário |
-| email | VARCHAR(255) | UNIQUE, NOT NULL | Email (identificador único) |
-| senha | VARCHAR(255) | NOT NULL | Senha criptografada |
-| tipo | VARCHAR(50) | - | Tipo do usuário (participante, coordenador, admin) |
+| id | SERIAL | PK | Identificador unico (auto-incremento) |
+| nome | VARCHAR(255) | NOT NULL | Nome completo do usuario |
+| email | VARCHAR(255) | UNIQUE, NOT NULL | Email (identificador unico) |
+| senha | VARCHAR(255) | NOT NULL | Senha do usuario |
 
 ### 4.2 Participante
+
 Herda de Usuario via chave estrangeira.
 
-| Coluna | Tipo | Restrição | Descrição |
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| usuario_id | INT | PK, FK | Referência ao Usuario (id) |
-| categoria | VARCHAR(255) | - | Categoria do participante (ex: aluno, professor) |
+| usuario_id | INT | PK, FK | Referencia ao Usuario (id) |
+| categoria | VARCHAR(255) | - | Categoria do participante (ex: aluno, professor, visitante) |
 
 ### 4.3 Coordenador
+
 Herda de Usuario via chave estrangeira.
 
-| Coluna | Tipo | Restrição | Descrição |
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| usuario_id | INT | PK, FK | Referência ao Usuario (id) |
+| usuario_id | INT | PK, FK | Referencia ao Usuario (id) |
 
 ### 4.4 Administrador
+
 Herda de Usuario via chave estrangeira.
 
-| Coluna | Tipo | Restrição | Descrição |
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| usuario_id | INT | PK, FK | Referência ao Usuario (id) |
+| usuario_id | INT | PK, FK | Referencia ao Usuario (id) |
 
 ### 4.5 Evento
-Tabela principal de eventos acadêmicos.
 
-| Coluna | Tipo | Restrição | Descrição |
+Tabela principal de eventos academicos.
+
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| id | SERIAL | PK | Identificador único |
+| id | SERIAL | PK | Identificador unico |
 | nome | VARCHAR(255) | NOT NULL | Nome do evento |
-| instituicao | VARCHAR(255) | - | Instituição organizadora |
-| modalidade | VARCHAR(255) | - | Modalidade (presencial, online, híbrido) |
-| dataInicio | DATE | - | Data de início |
-| dataFim | DATE | - | Data de término |
-| status | VARCHAR(50) | - | Status (planejado, em_andamento, concluído) |
+| instituicao | VARCHAR(255) | - | Instituicao organizadora |
+| modalidade | VARCHAR(255) | - | Modalidade (presencial, online, hibrido) |
+| dataInicio | DATE | - | Data de inicio |
+| dataFim | DATE | - | Data de termino |
+| status | VARCHAR(50) | - | Status (ativo, pendente, cancelado, finalizado) |
 
 ### 4.6 Atividade
+
 Atividades vinculadas a um evento.
 
-| Coluna | Tipo | Restrição | Descrição |
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| id | SERIAL | PK | Identificador único |
-| titulo | VARCHAR(255) | NOT NULL | Título da atividade |
-| cargaHoraria | INT | - | Carga horária (horas) |
-| vagas | INT | - | Número de vagas disponíveis |
+| id | SERIAL | PK | Identificador unico |
+| titulo | VARCHAR(255) | NOT NULL | Titulo da atividade |
+| cargaHoraria | INT | - | Carga horaria (horas) |
+| vagas | INT | - | Numero de vagas disponiveis |
 | local | VARCHAR(255) | - | Local da atividade |
-| evento_id | INT | FK, NOT NULL | Referência ao Evento (id) |
+| evento_id | INT | FK, NOT NULL | Referencia ao Evento (id) |
 
 ### 4.7 Inscricao
-Registro de inscrições de participantes em eventos.
 
-| Coluna | Tipo | Restrição | Descrição |
+Registro de inscricoes de participantes em eventos.
+
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| id | SERIAL | PK | Identificador único |
+| id | SERIAL | PK | Identificador unico |
 | status | VARCHAR(50) | - | Status (pendente, confirmada, cancelada) |
-| data | DATE | DEFAULT CURRENT_DATE | Data da inscrição |
-| participante_id | INT | FK, NOT NULL | Referência ao Participante (usuario_id) |
-| evento_id | INT | FK, NOT NULL | Referência ao Evento (id) |
+| data | DATE | DEFAULT CURRENT_DATE | Data da inscricao |
+| participante_id | INT | FK, NOT NULL | Referencia ao Participante (usuario_id) |
+| evento_id | INT | FK, NOT NULL | Referencia ao Evento (id) |
 
 ### 4.8 Certificado
+
 Certificados emitidos para participantes.
 
-| Coluna | Tipo | Restrição | Descrição |
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| codigo | VARCHAR(255) | PK | Código único de validação |
-| cargaHoraria | INT | - | Carga horária certificada |
-| status | VARCHAR(50) | - | Status (emitido, validado, revogado) |
-| participante_id | INT | FK, NOT NULL | Referência ao Participante (usuario_id) |
-| evento_id | INT | FK, NOT NULL | Referência ao Evento (id) |
+| codigo | VARCHAR(255) | PK | Codigo unico de validacao |
+| cargaHoraria | INT | - | Carga horaria certificada |
+| status | VARCHAR(50) | - | Status (emitido, pendente, cancelado) |
+| participante_id | INT | FK, NOT NULL | Referencia ao Participante (usuario_id) |
+| evento_id | INT | FK, NOT NULL | Referencia ao Evento (id) |
 
 ### 4.9 Presenca
-Controle de presença em atividades (chave composta).
 
-| Coluna | Tipo | Restrição | Descrição |
+Controle de presenca em atividades (chave composta).
+
+| Coluna | Tipo | Restricao | Descricao |
 |--------|------|-----------|-----------|
-| checkIn | TIMESTAMP | - | Horário de entrada |
-| checkOut | TIMESTAMP | - | Horário de saída |
-| participante_id | INT | PK, FK, NOT NULL | Referência ao Participante (usuario_id) |
-| atividade_id | INT | PK, FK, NOT NULL | Referência à Atividade (id) |
+| checkIn | TIMESTAMP | - | Horario de entrada |
+| checkOut | TIMESTAMP | - | Horario de saida |
+| participante_id | INT | PK, FK, NOT NULL | Referencia ao Participante (usuario_id) |
+| atividade_id | INT | PK, FK, NOT NULL | Referencia a Atividade (id) |
 
 ---
 
-## 5. Relacionamentos
+## 5. View: vw_usuario_tipo
+
+O tipo do usuario e calculado dinamicamente por uma VIEW, garantindo que o tipo sempre reflita a realidade dos dados nas tabelas filhas. Isso elimina o risco de inconsistencia entre um campo `tipo` armazenado e os registros reais.
+
+```sql
+CREATE VIEW vw_usuario_tipo AS
+SELECT 
+    u.id,
+    u.nome,
+    u.email,
+    u.senha,
+    CASE 
+        WHEN p.usuario_id IS NOT NULL THEN 'participante'
+        WHEN c.usuario_id IS NOT NULL THEN 'coordenador'
+        WHEN a.usuario_id IS NOT NULL THEN 'administrador'
+        ELSE 'sem_perfil'
+    END AS tipo
+FROM Usuario u
+LEFT JOIN Participante p ON u.id = p.usuario_id
+LEFT JOIN Coordenador c ON u.id = c.usuario_id
+LEFT JOIN Administrador a ON u.id = a.usuario_id;
+```
+
+| Valor do `tipo` | Condicao |
+|---|---|
+| `participante` | Existe registro em `Participante` |
+| `coordenador` | Existe registro em `Coordenador` |
+| `administrador` | Existe registro em `Administrador` |
+| `sem_perfil` | Nao existe em nenhuma tabela filha |
+
+---
+
+## 6. Relacionamentos
 
 ```mermaid
 flowchart LR
@@ -256,24 +296,24 @@ flowchart LR
 
 | Tabela Origem | Tabela Destino | Cardinalidade | Tipo |
 |---------------|----------------|---------------|------|
-| Usuario | Participante | 1:1 | Herança |
-| Usuario | Coordenador | 1:1 | Herança |
-| Usuario | Administrador | 1:1 | Herança |
-| Evento | Atividade | 1:N | Composição |
-| Evento | Inscricao | 1:N | Associação |
-| Evento | Certificado | 1:N | Associação |
-| Participante | Inscricao | 1:N | Associação |
-| Participante | Certificado | 1:N | Associação |
-| Participante + Atividade | Presenca | N:M | Associação (tabela associativa) |
+| Usuario | Participante | 1:1 | Heranca |
+| Usuario | Coordenador | 1:1 | Heranca |
+| Usuario | Administrador | 1:1 | Heranca |
+| Evento | Atividade | 1:N | Composicao |
+| Evento | Inscricao | 1:N | Associacao |
+| Evento | Certificado | 1:N | Associacao |
+| Participante | Inscricao | 1:N | Associacao |
+| Participante | Certificado | 1:N | Associacao |
+| Participante + Atividade | Presenca | N:M | Associacao (tabela associativa) |
 
 ---
 
-## 6. Script SQL Completo
+## 7. Script SQL Completo
 
 ```sql
 CREATE DATABASE sistema_eventos WITH ENCODING = 'UTF8';
 
--- Remover tabelas se existirem (ordem correta para evitar erros de dependência)
+DROP VIEW IF EXISTS vw_usuario_tipo;
 DROP TABLE IF EXISTS Presenca;
 DROP TABLE IF EXISTS Certificado;
 DROP TABLE IF EXISTS Inscricao;
@@ -284,38 +324,32 @@ DROP TABLE IF EXISTS Coordenador;
 DROP TABLE IF EXISTS Participante;
 DROP TABLE IF EXISTS Usuario;
 
--- Tabela Pai: Usuario
 CREATE TABLE Usuario (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-    tipo VARCHAR(50)
+    senha VARCHAR(255) NOT NULL
 );
 
--- Herança: Participante
 CREATE TABLE Participante (
     usuario_id INT PRIMARY KEY,
     categoria VARCHAR(255),
-    CONSTRAINT fk_participante_usuario FOREIGN KEY (usuario_id) 
+    CONSTRAINT fk_participante_usuario FOREIGN KEY (usuario_id)
         REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
--- Herança: Coordenador
 CREATE TABLE Coordenador (
     usuario_id INT PRIMARY KEY,
-    CONSTRAINT fk_coordenador_usuario FOREIGN KEY (usuario_id) 
+    CONSTRAINT fk_coordenador_usuario FOREIGN KEY (usuario_id)
         REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
--- Herança: Administrador
 CREATE TABLE Administrador (
     usuario_id INT PRIMARY KEY,
-    CONSTRAINT fk_administrador_usuario FOREIGN KEY (usuario_id) 
+    CONSTRAINT fk_administrador_usuario FOREIGN KEY (usuario_id)
         REFERENCES Usuario(id) ON DELETE CASCADE
 );
 
--- Tabela: Evento
 CREATE TABLE Evento (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -326,7 +360,6 @@ CREATE TABLE Evento (
     status VARCHAR(50)
 );
 
--- Tabela: Atividade
 CREATE TABLE Atividade (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
@@ -334,77 +367,91 @@ CREATE TABLE Atividade (
     vagas INT,
     local VARCHAR(255),
     evento_id INT NOT NULL,
-    CONSTRAINT fk_atividade_evento FOREIGN KEY (evento_id) 
+    CONSTRAINT fk_atividade_evento FOREIGN KEY (evento_id)
         REFERENCES Evento(id) ON DELETE CASCADE
 );
 
--- Tabela: Inscricao
 CREATE TABLE Inscricao (
     id SERIAL PRIMARY KEY,
     status VARCHAR(50),
     data DATE DEFAULT CURRENT_DATE,
     participante_id INT NOT NULL,
     evento_id INT NOT NULL,
-    CONSTRAINT fk_inscricao_participante FOREIGN KEY (participante_id) 
-        REFERENCES Participante(usuario_id),
-    CONSTRAINT fk_inscricao_evento FOREIGN KEY (evento_id) 
-        REFERENCES Evento(id)
+    CONSTRAINT fk_inscricao_participante FOREIGN KEY (participante_id)
+        REFERENCES Participante(usuario_id) ON DELETE CASCADE,
+    CONSTRAINT fk_inscricao_evento FOREIGN KEY (evento_id)
+        REFERENCES Evento(id) ON DELETE CASCADE
 );
 
--- Tabela: Certificado
 CREATE TABLE Certificado (
     codigo VARCHAR(255) PRIMARY KEY,
     cargaHoraria INT,
     status VARCHAR(50),
     participante_id INT NOT NULL,
     evento_id INT NOT NULL,
-    CONSTRAINT fk_certificado_participante FOREIGN KEY (participante_id) 
-        REFERENCES Participante(usuario_id),
-    CONSTRAINT fk_certificado_evento FOREIGN KEY (evento_id) 
-        REFERENCES Evento(id)
+    CONSTRAINT fk_certificado_participante FOREIGN KEY (participante_id)
+        REFERENCES Participante(usuario_id) ON DELETE CASCADE,
+    CONSTRAINT fk_certificado_evento FOREIGN KEY (evento_id)
+        REFERENCES Evento(id) ON DELETE CASCADE
 );
 
--- Tabela: Presenca
 CREATE TABLE Presenca (
     checkIn TIMESTAMP,
     checkOut TIMESTAMP,
     participante_id INT NOT NULL,
     atividade_id INT NOT NULL,
     PRIMARY KEY (participante_id, atividade_id),
-    CONSTRAINT fk_presenca_participante FOREIGN KEY (participante_id) 
-        REFERENCES Participante(usuario_id),
-    CONSTRAINT fk_presenca_atividade FOREIGN KEY (atividade_id) 
-        REFERENCES Atividade(id)
+    CONSTRAINT fk_presenca_participante FOREIGN KEY (participante_id)
+        REFERENCES Participante(usuario_id) ON DELETE CASCADE,
+    CONSTRAINT fk_presenca_atividade FOREIGN KEY (atividade_id)
+        REFERENCES Atividade(id) ON DELETE CASCADE
 );
+
+CREATE VIEW vw_usuario_tipo AS
+SELECT
+    u.id, u.nome, u.email, u.senha,
+    CASE
+        WHEN p.usuario_id IS NOT NULL THEN 'participante'
+        WHEN c.usuario_id IS NOT NULL THEN 'coordenador'
+        WHEN a.usuario_id IS NOT NULL THEN 'administrador'
+        ELSE 'sem_perfil'
+    END AS tipo
+FROM Usuario u
+LEFT JOIN Participante p ON u.id = p.usuario_id
+LEFT JOIN Coordenador c ON u.id = c.usuario_id
+LEFT JOIN Administrador a ON u.id = a.usuario_id;
 ```
 
 ---
 
-## 7. Regras de Negócio e Restrições
+## 8. Regras de Negocio e Restricoes
 
-### 7.1 Integridade Referencial
-- **ON DELETE CASCADE** em:
-  - Participante, Coordenador, Administrador (se usuário for deletado, o registro específico também é)
-  - Atividade (se evento for deletado, atividades também são)
-  
-- **Restrição padrão** em:
-  - Inscricao, Certificado, Presenca (proteção contra deleção de registros referenciados)
+### 8.1 Integridade Referencial
 
-### 7.2 Validações
-- Email deve ser único na tabela Usuario
-- Código do certificado deve ser único (chave primária)
-- Presença usa chave composta (participante_id + atividade_id) para evitar duplicidade
+- **ON DELETE CASCADE** em todas as chaves estrangeiras:
+  - Participante, Coordenador, Administrador (se usuario for deletado, o registro especifico tambem e)
+  - Atividade (se evento for deletado, atividades tambem sao)
+  - Inscricao (se participante ou evento for deletado, inscricao tambem e)
+  - Certificado (se participante ou evento for deletado, certificado tambem e)
+  - Presenca (se participante ou atividade for deletado, presenca tambem e)
 
-### 7.3 Valores Padrão
-- Data de inscrição: data atual do sistema (CURRENT_DATE)
+### 8.2 Validacoes
+
+- Email deve ser unico na tabela Usuario
+- Codigo do certificado deve ser unico (chave primaria)
+- Presenca usa chave composta (participante_id + atividade_id) para evitar duplicidade
+
+### 8.3 Valores Padrao
+
+- Data de inscricao: data atual do sistema (CURRENT_DATE)
 - IDs: auto-incremento via SERIAL
+- Tipo do usuario: calculado dinamicamente pela VIEW `vw_usuario_tipo`
 
 ---
 
-## 8. Índices Recomendados
+## 9. Indices Recomendados
 
 ```sql
--- Para melhorar performance de consultas frequentes
 CREATE INDEX idx_usuario_email ON Usuario(email);
 CREATE INDEX idx_inscricao_participante ON Inscricao(participante_id);
 CREATE INDEX idx_inscricao_evento ON Inscricao(evento_id);
@@ -415,16 +462,24 @@ CREATE INDEX idx_atividade_evento ON Atividade(evento_id);
 
 ---
 
-## 9. Consultas Úteis (Queries)
+## 10. Consultas Uteis (Queries)
 
-### 9.1 Listar todos os participantes com seus dados
+### 10.1 Listar todos os usuarios com tipo (via view)
+
+```sql
+SELECT id, nome, email, tipo FROM vw_usuario_tipo ORDER BY id;
+```
+
+### 10.2 Listar todos os participantes com seus dados
+
 ```sql
 SELECT u.id, u.nome, u.email, p.categoria
 FROM Usuario u
 JOIN Participante p ON u.id = p.usuario_id;
 ```
 
-### 9.2 Eventos com suas atividades
+### 10.3 Eventos com suas atividades
+
 ```sql
 SELECT e.nome AS evento, a.titulo AS atividade, a.cargaHoraria, a.local
 FROM Evento e
@@ -432,7 +487,8 @@ LEFT JOIN Atividade a ON e.id = a.evento_id
 ORDER BY e.dataInicio, a.titulo;
 ```
 
-### 9.3 Participantes inscritos em um evento
+### 10.4 Participantes inscritos em um evento
+
 ```sql
 SELECT u.nome, u.email, i.status, i.data
 FROM Inscricao i
@@ -441,7 +497,8 @@ JOIN Usuario u ON p.usuario_id = u.id
 WHERE i.evento_id = ?;
 ```
 
-### 9.4 Presença em atividades
+### 10.5 Presenca em atividades
+
 ```sql
 SELECT u.nome, a.titulo, pr.checkIn, pr.checkOut
 FROM Presenca pr
@@ -451,7 +508,8 @@ JOIN Atividade a ON pr.atividade_id = a.id
 ORDER BY a.titulo, pr.checkIn;
 ```
 
-### 9.5 Certificados emitidos
+### 10.6 Certificados emitidos
+
 ```sql
 SELECT c.codigo, u.nome AS participante, e.nome AS evento, 
        c.cargaHoraria, c.status
@@ -463,71 +521,74 @@ JOIN Evento e ON c.evento_id = e.id;
 
 ---
 
-## 10. Considerações do Modelo
+## 11. Consideracoes do Modelo
 
 ### Pontos Fortes
-1. **Herança via Chave Estrangeira**: Implementa corretamente o padrão de herança no PostgreSQL
-2. **Integridade Referencial**: Uso adequado de chaves estrangeiras
-3. **Cascade Delete**: Tratamento apropriado para entidades dependentes
-4. **Chave Composta**: Presença usa (participante_id, atividade_id) evitando duplicidade
 
-### Possíveis Melhorias
+1. **Heranca via Chave Estrangeira**: Implementa corretamente o padrao de heranca no PostgreSQL
+2. **VIEW para tipo**: O tipo e sempre um reflexo dos dados reais, eliminando inconsistencia silenciosa
+3. **Integridade Referencial**: Uso adequado de chaves estrangeiras
+4. **Cascade Delete**: Tratamento apropriado para entidades dependentes
+5. **Chave Composta**: Presenca usa (participante_id, atividade_id) evitando duplicidade
+
+### Possiveis Melhorias
+
 1. Adicionar **CHECK constraints** para validar valores (ex: status, modalidade)
-2. Implementar **índices** para melhorar performance em consultas frequentes
-3. Adicionar campos de **auditoria** (created_at, updated_at) se necessário
-4. Considerar uso de **ENUM** para campos com valores fixos (status, tipo, modalidade)
-5. Adicionar **unique constraint** em Inscricao (participante_id, evento_id) para evitar inscrições duplicadas
+2. Implementar **indices** para melhorar performance em consultas frequentes
+3. Adicionar campos de **auditoria** (created_at, updated_at) se necessario
+4. Adicionar **unique constraint** em Inscricao (participante_id, evento_id) para evitar inscricoes duplicadas
+5. Considerar **hash de senha** (bcrypt/argon2) em vez de armazenamento em texto puro
 
 ---
 
-## 11. Diagrama de Classes (Representação Orientada a Objetos)
+## 12. Diagrama de Classes (Representacao Orientada a Objetos)
 
 ```
-┌─────────────────────────┐
-│        Usuario          │
-├─────────────────────────┤
-│ - id: int               │
-│ - nome: string          │
-│ - email: string         │
-│ - senha: string         │
-│ - tipo: string          │
-└───────────┬─────────────┘
-            │
-    ┌───────┴───────┬───────────┐
-    ▼               ▼           ▼
-┌─────────┐   ┌──────────┐  ┌────────────┐
-│Participante│ │Coordenador│ │Administrador│
-├─────────┤   ├──────────┤  ├────────────┤
-│-categoria│ │          │  │            │
-└────┬────┘   └──────────┘  └────────────┘
-     │
-     │
-┌────┴────────────────────────────────────┐
-│            Sistema de Eventos           │
-├────────────────────────────────────────┤
-│ Evento ────> Atividade                 │
-│ Participante ──> Inscricao ──> Evento  │
-│ Participante ──> Presenca ──> Atividade│
-│ Participante ──> Certificado <── Evento │
-└────────────────────────────────────────┘
++-------------------------+
+|        Usuario          |
++-------------------------+
+| - id: int               |
+| - nome: string          |
+| - email: string         |
+| - senha: string         |
++------------+------------+
+             |
+     +-------+-------+-----------+
+     v               v           v
++-----------+   +-----------+  +---------------+
+|Participante|  |Coordenador|  |Administrador  |
++-----------+   +-----------+  +---------------+
+|- categoria  |  |           |  |               |
++-----+------+  +-----------+  +---------------+
+      |
+      |
++-----+---------------------------------------+
+|            Sistema de Eventos               |
++---------------------------------------------+
+| Evento ----> Atividade                      |
+| Participante --> Inscricao --> Evento       |
+| Participante --> Presenca --> Atividade     |
+| Participante --> Certificado <-- Evento     |
++---------------------------------------------+
 ```
 
 ---
 
-## 12. Glossário
+## 13. Glossario
 
-| Termo | Definição |
+| Termo | Definicao |
 |-------|-----------|
 | SERIAL | Tipo de dado PostgreSQL para auto-incremento |
-| PK | Primary Key (Chave Primária) |
+| PK | Primary Key (Chave Primaria) |
 | FK | Foreign Key (Chave Estrangeira) |
-| UK | Unique Key (Chave Única) |
-| CASCADE | Ação referencial que propaga deleção para tabelas dependentes |
+| UK | Unique Key (Chave Unica) |
+| CASCADE | Acao referencial que propaga delecao para tabelas dependentes |
 | TIMESTAMP | Tipo de dado para data e hora |
-| CHECK | Restrição para validar valores em colunas |
+| CHECK | Restricao para validar valores em colunas |
+| VIEW | Tabela virtual que calcula dados dinamicamente a partir de outras tabelas |
 
 ---
 
-**Documento gerado em:** 2026-05-06  
-**Versão do Banco:** 1.0  
+**Documento gerado em:** 2026-05-18  
+**Versao do Banco:** 2.0 (com VIEW vw_usuario_tipo)  
 **Autor:** Sistema SGEA

@@ -4,9 +4,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
+      POSTGRES_DB: SGEA
       POSTGRES_USER: root
       POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: SGEA
     ports:
       - "5432:5432"
     volumes:
