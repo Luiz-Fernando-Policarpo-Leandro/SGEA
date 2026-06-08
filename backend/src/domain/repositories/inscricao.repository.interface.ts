@@ -10,4 +10,5 @@ export interface IInscricaoRepository {
   delete(id: number): Promise<boolean>
   participanteExists(participante_id: number): Promise<boolean>
   eventoExists(evento_id: number): Promise<boolean>
+  findByParticipanteAndEvento(participante_id: number, evento_id: number): Promise<Inscricao | null>
 }

@@ -14,13 +14,13 @@ Plataforma fullstack para centralizar e automatizar todo o ciclo de vida de even
 
 ## Tech Stack
 
-| Camada | Tecnologia |
-|--------|-----------|
-| Frontend | React 18, Vite 5, Tailwind CSS 4, React Router 6, Axios |
-| Backend | Express 5, TypeScript 6, Node.js |
-| Banco de Dados | PostgreSQL (Docker) |
-| Autenticação | JWT (jsonwebtoken), bcryptjs |
-| Validação | Zod |
+| Camada         | Tecnologia                                              |
+| -------------- | ------------------------------------------------------- |
+| Frontend       | React 18, Vite 5, Tailwind CSS 4, React Router 6, Axios |
+| Backend        | Express 5, TypeScript 6, Node.js                        |
+| Banco de Dados | PostgreSQL (Docker)                                     |
+| Autenticação   | JWT (jsonwebtoken), bcryptjs                            |
+| Validação      | Zod                                                     |
 
 ## Arquitetura
 
@@ -129,34 +129,34 @@ Frontend disponível em `http://localhost:5173` (proxy `/api` → backend na por
 
 ## Papéis de Usuário
 
-| Papel | Permissões |
-|-------|-----------|
-| **participante** | Visualizar eventos, inscrever-se, ver seus certificados e presenças, editar próprio perfil |
-| **coordenador** | Tudo do participante + criar/editar eventos, atividades, gerenciar inscrições e presenças |
-| **administrador** | Tudo do coordenador + excluir eventos, gerenciar coordenadores e administradores |
+| Papel             | Permissões                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| **participante**  | Visualizar eventos, inscrever-se, ver seus certificados e presenças, editar próprio perfil |
+| **coordenador**   | Tudo do participante + criar/editar eventos, atividades, gerenciar inscrições e presenças  |
+| **administrador** | Tudo do coordenador + excluir eventos, gerenciar coordenadores e administradores           |
 
 ## Rotas da API
 
 Todas as rotas autenticadas requerem header `Authorization: Bearer <token>`.
 
-| Método | Rota | Auth | Papel |
-|--------|------|------|-------|
-| POST | `/api/login` | Não | — |
-| POST | `/api/usuarios` | Não | — |
-| POST | `/api/participantes` | Não | — (auto-registro) |
-| POST | `/api/coordenadores` | Não | — (auto-registro) |
-| GET | `/api/eventos` | Sim | Qualquer |
-| POST | `/api/eventos` | Sim | coordenador, administrador |
-| GET | `/api/atividades/evento/:evento_id` | Sim | Qualquer |
-| POST | `/api/atividades` | Sim | coordenador, administrador |
-| POST | `/api/inscricoes` | Sim | Qualquer |
-| GET | `/api/inscricoes/participante/:id` | Sim | Qualquer |
-| GET | `/api/inscricoes/evento/:evento_id` | Sim | coordenador, administrador |
-| GET | `/api/certificados/participante/:id` | Sim | Qualquer |
-| GET | `/api/certificados/:codigo` | Sim | Qualquer |
-| POST | `/api/certificados` | Sim | coordenador, administrador |
-| POST | `/api/presencas` | Sim | coordenador, administrador |
-| GET | `/health` | Não | — |
+| Método | Rota                                 | Auth | Papel                      |
+| ------ | ------------------------------------ | ---- | -------------------------- |
+| POST   | `/api/login`                         | Não  | —                          |
+| POST   | `/api/usuarios`                      | Não  | —                          |
+| POST   | `/api/participantes`                 | Não  | — (auto-registro)          |
+| POST   | `/api/coordenadores`                 | Não  | — (auto-registro)          |
+| GET    | `/api/eventos`                       | Sim  | Qualquer                   |
+| POST   | `/api/eventos`                       | Sim  | coordenador, administrador |
+| GET    | `/api/atividades/evento/:evento_id`  | Sim  | Qualquer                   |
+| POST   | `/api/atividades`                    | Sim  | coordenador, administrador |
+| POST   | `/api/inscricoes`                    | Sim  | Qualquer                   |
+| GET    | `/api/inscricoes/participante/:id`   | Sim  | Qualquer                   |
+| GET    | `/api/inscricoes/evento/:evento_id`  | Sim  | coordenador, administrador |
+| GET    | `/api/certificados/participante/:id` | Sim  | Qualquer                   |
+| GET    | `/api/certificados/:codigo`          | Sim  | Qualquer                   |
+| POST   | `/api/certificados`                  | Sim  | coordenador, administrador |
+| POST   | `/api/presencas`                     | Sim  | coordenador, administrador |
+| GET    | `/health`                            | Não  | —                          |
 
 > Rotas de PUT e DELETE seguem o mesmo padrão de permissão. DELETE requer `administrador`.
 

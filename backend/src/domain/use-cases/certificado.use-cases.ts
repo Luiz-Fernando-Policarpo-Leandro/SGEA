@@ -26,7 +26,7 @@ export class ListCertificadosUseCase {
 export class GetCertificadoUseCase {
   constructor(private repository: ICertificadoRepository) {}
 
-  async execute(codigo: string): Promise<Certificado | null> {
+  async execute(codigo: string): Promise<CertificadoWithEvento | null> {
     return this.repository.findByCodigo(codigo)
   }
 }

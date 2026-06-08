@@ -17,10 +17,13 @@ const result = await pool.query('SELECT * FROM certificados')
 return result.rows
 }
 
-async findByCodigo(codigo: string): Promise<Certificado | null> {
-const result = await pool.query('SELECT * FROM certificados WHERE codigo = $1', [codigo])
-return result.rows[0] || null
-}
+  async findByCodigo(codigo: string): Promise<CertificadoWithEvento | null> {
+    const result = await pool.query(
+      'SELECT c.*, e.nome as evento_nome FROM certificados c JOIN eventos e ON c.evento_id = e.id WHERE c.codigo = $1',
+      [codigo],
+    )
+    return result.rows[0] || null
+  }
 
 async findByParticipante(participante_id: number): Promise<CertificadoWithEvento[]> {
 const result = await pool.query(

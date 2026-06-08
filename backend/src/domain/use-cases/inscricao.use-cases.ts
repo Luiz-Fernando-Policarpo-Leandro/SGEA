@@ -11,6 +11,9 @@ export class CreateInscricaoUseCase {
     const eventoExists = await this.repository.eventoExists(data.evento_id)
     if (!eventoExists) throw new Error('Evento nao encontrado')
 
+    const existing = await this.repository.findByParticipanteAndEvento(data.participante_id, data.evento_id)
+    if (existing) throw new Error('Participante ja inscrito neste evento')
+
     return this.repository.create(data)
   }
 }

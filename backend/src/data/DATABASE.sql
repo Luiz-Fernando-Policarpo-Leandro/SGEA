@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS eventos;
 DROP TABLE IF EXISTS administradores;
 DROP TABLE IF EXISTS coordenadores;
 DROP TABLE IF EXISTS participantes;
-DROP TABLE IF EXISTS usuarios;
+DROP TABLE IF EXISTS usuarios CASCADE;
 
 CREATE TABLE usuarios (
 id SERIAL PRIMARY KEY,
@@ -46,14 +46,18 @@ status VARCHAR(50)
 );
 
 CREATE TABLE atividades (
-id SERIAL PRIMARY KEY,
-titulo VARCHAR(255) NOT NULL,
-cargaHoraria INT,
-vagas INT,
-local VARCHAR(255),
-evento_id INT NOT NULL,
-CONSTRAINT fk_atividades_eventos FOREIGN KEY (evento_id)
-REFERENCES eventos(id) ON DELETE CASCADE
+  id SERIAL PRIMARY KEY,
+  titulo VARCHAR(255) NOT NULL,
+  tipo VARCHAR(100),
+  cargaHoraria INT,
+  vagas INT,
+  local VARCHAR(255),
+  horario_inicio TIME,
+  horario_fim TIME,
+  responsavel VARCHAR(255),
+  evento_id INT NOT NULL,
+  CONSTRAINT fk_atividades_eventos FOREIGN KEY (evento_id)
+  REFERENCES eventos(id) ON DELETE CASCADE
 );
 
 CREATE TABLE inscricoes (

@@ -3,7 +3,7 @@ import { Certificado, CertificadoWithEvento } from '../entities/certificado.enti
 export interface ICertificadoRepository {
   create(data: Certificado): Promise<Certificado>
   findAll(): Promise<Certificado[]>
-  findByCodigo(codigo: string): Promise<Certificado | null>
+  findByCodigo(codigo: string): Promise<CertificadoWithEvento | null>
   findByParticipante(participante_id: number): Promise<CertificadoWithEvento[]>
   update(codigo: string, data: Partial<Certificado>): Promise<Certificado | null>
   delete(codigo: string): Promise<boolean>

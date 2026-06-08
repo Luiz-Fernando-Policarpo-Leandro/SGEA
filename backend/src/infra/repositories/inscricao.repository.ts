@@ -56,8 +56,16 @@ const result = await pool.query('SELECT usuario_id FROM participantes WHERE usua
 return !!result.rows[0]
 }
 
-async eventoExists(evento_id: number): Promise<boolean> {
-const result = await pool.query('SELECT id FROM eventos WHERE id = $1', [evento_id])
-return !!result.rows[0]
-}
+  async eventoExists(evento_id: number): Promise<boolean> {
+    const result = await pool.query('SELECT id FROM eventos WHERE id = $1', [evento_id])
+    return !!result.rows[0]
+  }
+
+  async findByParticipanteAndEvento(participante_id: number, evento_id: number): Promise<Inscricao | null> {
+    const result = await pool.query(
+      'SELECT * FROM inscricoes WHERE participante_id = $1 AND evento_id = $2 AND status != $3',
+      [participante_id, evento_id, 'cancelada'],
+    )
+    return result.rows[0] || null
+  }
 }

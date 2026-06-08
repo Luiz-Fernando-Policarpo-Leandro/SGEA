@@ -22,6 +22,9 @@ export class InscricaoController {
       if (error.message === 'Participante nao encontrado' || error.message === 'Evento nao encontrado') {
         return res.status(400).json({ error: error.message })
       }
+      if (error.message === 'Participante ja inscrito neste evento') {
+        return res.status(409).json({ error: error.message })
+      }
       return res.status(500).json({ error: error.message })
     }
   }

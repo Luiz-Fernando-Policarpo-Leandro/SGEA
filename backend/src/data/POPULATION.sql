@@ -2,7 +2,7 @@ INSERT INTO usuarios (nome, email, senha)
 SELECT
 'Usuario' || i,
 'usuario' || i || '@gmail.com',
-'1234'
+'$2b$10$F/N1gfF0UIKrjgPC2dqWduoqvP4h35Fy.HsN0K9jw8.AC3Y4yaUCS' -- senha: 1234
 FROM generate_series(1, 50) AS i;
 
 INSERT INTO participantes (usuario_id, categoria)
@@ -43,13 +43,17 @@ VALUES
 ('Workshop Docker', 'UNICAMP', 'online', '2027-08-01', '2027-08-02', 'ativo'),
 ('Conferencia Tech', 'UFMG', 'presencial', '2027-09-10', '2027-09-12', 'pendente');
 
-INSERT INTO atividades (titulo, cargaHoraria, vagas, local, evento_id)
+INSERT INTO atividades (titulo, tipo, cargaHoraria, vagas, local, horario_inicio, horario_fim, responsavel, evento_id)
 SELECT
-'Atividade ' || a || ' - ' || e.nome,
-(ARRAY [4, 8, 12, 16, 20, 40])[floor(random() * 6 + 1)::int],
-(ARRAY [20, 30, 40, 50, 100])[floor(random() * 5 + 1)::int],
-(ARRAY ['Sala A', 'Sala B', 'Auditório', 'Lab 1', 'Online'])[floor(random() * 5 + 1)::int],
-e.id
+  'Atividade ' || a || ' - ' || e.nome,
+  (ARRAY ['palestra', 'minicurso', 'workshop', 'mesa-redonda', 'hackathon'])[floor(random() * 5 + 1)::int],
+  (ARRAY [4, 8, 12, 16, 20, 40])[floor(random() * 6 + 1)::int],
+  (ARRAY [20, 30, 40, 50, 100])[floor(random() * 5 + 1)::int],
+  (ARRAY ['Sala A', 'Sala B', 'Auditório', 'Lab 1', 'Online'])[floor(random() * 5 + 1)::int],
+  (ARRAY ['08:00', '09:00', '10:00', '14:00', '15:00'])[floor(random() * 5 + 1)::int]::time,
+  (ARRAY ['12:00', '13:00', '14:00', '18:00', '19:00'])[floor(random() * 5 + 1)::int]::time,
+  'Responsável ' || a,
+  e.id
 FROM eventos e
 CROSS JOIN generate_series(1, 5) AS a;
 

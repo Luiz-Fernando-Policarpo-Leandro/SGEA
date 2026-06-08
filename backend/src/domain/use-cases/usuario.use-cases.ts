@@ -50,7 +50,7 @@ export class DeleteUsuarioUseCase {
 export class LoginUseCase {
   constructor(private repository: IUsuarioRepository) {}
 
-  async execute(email: string, senha: string): Promise<{ token: string; user: Omit<TokenPayload, 'tipo'> & { tipo: string } }> {
+  async execute(email: string, senha: string): Promise<{ token: string; user: { id: number; nome: string; email: string; tipo: string; perfil_id: number } }> {
     const user = await this.repository.findByEmail(email)
 
     if (!user) {
@@ -65,6 +65,6 @@ export class LoginUseCase {
     const payload: TokenPayload = { id: user.id, email: user.email, tipo: user.tipo }
     const token = generateToken(payload)
 
-    return { token, user: { id: user.id, email: user.email, tipo: user.tipo } }
+    return { token, user: { id: user.id, nome: user.nome, email: user.email, tipo: user.tipo, perfil_id: user.id } }
   }
 }
