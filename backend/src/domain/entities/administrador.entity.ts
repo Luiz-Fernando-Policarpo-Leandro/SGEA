@@ -1,8 +1,8 @@
 export interface Administrador {
-  usuario_id: number
+  usuario_id: number;
 }
 
 export interface AdministradorWithUser extends Administrador {
-  nome: string
-  email: string
+  nome: string;
+  email: string;
 }

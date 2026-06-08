@@ -1,15 +1,15 @@
 export interface Inscricao {
-  id: number
-  status?: string
-  data?: Date
-  participante_id: number
-  evento_id: number
+  id: number;
+  status?: string;
+  data?: Date;
+  participante_id: number;
+  evento_id: number;
 }
 
 export interface InscricaoWithEvento extends Inscricao {
-  evento_nome: string
+  evento_nome: string;
 }
 
 export interface InscricaoWithParticipante extends Inscricao {
-  participante_nome: string
+  participante_nome: string;
 }

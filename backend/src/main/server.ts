@@ -1,10 +1,10 @@
-import app from './config/app'
-import router from './config/routes'
+import app from "./config/app";
+import router from "./config/routes";
 
-app.use(router)
+app.use(router);
 
-const PORT = app.get('port')
+const PORT = app.get("port");
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`)
-})
+  console.log(`Server running at http://localhost:${PORT}`);
+});
