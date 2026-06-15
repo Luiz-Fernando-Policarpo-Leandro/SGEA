@@ -88,6 +88,17 @@ export class InscricaoController {
 
   remove = async (req: Request, res: Response) => {
     try {
+      const inscricao = await this.repository.findById(Number(req.params.id));
+      if (!inscricao)
+        return res.status(404).json({ error: "Inscricao nao encontrada" });
+
+      const isOwner = req.user?.id === inscricao.participante_id;
+      const isAdmin =
+        req.user?.tipo === "coordenador" || req.user?.tipo === "administrador";
+
+      if (!isOwner && !isAdmin)
+        return res.status(403).json({ error: "Acesso negado" });
+
       const useCase = new DeleteInscricaoUseCase(this.repository);
       const deleted = await useCase.execute(Number(req.params.id));
       if (!deleted)

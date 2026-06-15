@@ -42,7 +42,7 @@ const MeusEventosPage = () => {
     if (!window.confirm("Tem certeza que deseja cancelar esta inscrição?"))
       return;
     try {
-      await api.put(`/inscricoes/${inscricaoId}`, { status: "cancelada" });
+      await api.delete(`/inscricoes/${inscricaoId}`);
       setCancelMsg("Inscrição cancelada com sucesso!");
       const response = await api.get(
         `/inscricoes/participante/${user.perfil_id}`,

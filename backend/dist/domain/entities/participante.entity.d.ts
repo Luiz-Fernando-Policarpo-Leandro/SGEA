@@ -1,9 +1,9 @@
 export interface Participante {
-  usuario_id: number;
-  categoria: string;
+    usuario_id: number;
+    categoria: string;
 }
 export interface ParticipanteWithUser extends Participante {
-  nome: string;
-  email: string;
+    nome: string;
+    email: string;
 }
 //# sourceMappingURL=participante.entity.d.ts.map

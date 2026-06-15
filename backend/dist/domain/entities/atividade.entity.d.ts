@@ -1,9 +1,13 @@
 export interface Atividade {
-  id: number;
-  titulo: string;
-  cargaHoraria?: number;
-  vagas?: number;
-  local?: string;
-  evento_id: number;
+    id: number;
+    titulo: string;
+    tipo?: string;
+    cargaHoraria?: number;
+    vagas?: number;
+    local?: string;
+    horario_inicio?: string;
+    horario_fim?: string;
+    responsavel?: string;
+    evento_id: number;
 }
 //# sourceMappingURL=atividade.entity.d.ts.map

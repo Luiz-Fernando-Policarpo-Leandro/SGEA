@@ -1,10 +1,10 @@
 export interface Usuario {
-  id: number;
-  nome: string;
-  email: string;
-  senha: string;
+    id: number;
+    nome: string;
+    email: string;
+    senha: string;
 }
 export interface UsuarioWithTipo extends Usuario {
-  tipo: string;
+    tipo: string;
 }
 //# sourceMappingURL=usuario.entity.d.ts.map
