@@ -8,9 +8,16 @@ services:
       POSTGRES_USER: root
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432"
+      - "5431:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql 
+      - postgres_data:/var/lib/postgresql
+      - ./src/data/DATABASE.sql:/docker-entrypoint-initdb.d/01-database.sql:ro
+      - ./src/data/POPULATION.sql:/docker-entrypoint-initdb.d/02-population.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d SGEA"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:

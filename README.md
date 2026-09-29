@@ -16,7 +16,7 @@ Plataforma fullstack para centralizar e automatizar todo o ciclo de vida de even
 
 | Camada         | Tecnologia                                              |
 | -------------- | ------------------------------------------------------- |
-| Frontend       | React 18, Vite 5, Tailwind CSS 4, React Router 6, Axios |
+| Frontend       | React 18, Vite 8, Tailwind CSS 4, React Router 6, Axios |
 | Backend        | Express 5, TypeScript 6, Node.js                        |
 | Banco de Dados | PostgreSQL (Docker)                                     |
 | Autenticação   | JWT (jsonwebtoken), bcryptjs                            |
@@ -56,7 +56,7 @@ frontend/src/
 
 ## Pré-requisitos
 
-- [Node.js](https://nodejs.org/) 18+
+- [Node.js](https://nodejs.org/) 20.19+
 - [Docker](https://www.docker.com/) (para PostgreSQL)
 - npm ou yarn
 
@@ -69,32 +69,24 @@ git clone https://github.com/seu-usuario/SGEA.git
 cd SGEA
 ```
 
-### 2. Subir o banco de dados
+### 2. Subir o banco de dados com Docker
 
 ```bash
-cd backend
-docker compose up -d
+cd backend && docker compose up -d
 ```
 
-### 3. Criar o banco e popular dados
+O PostgreSQL fica disponível em `localhost:5431`. Em um volume novo, o Docker cria o schema e carrega os dados de demonstração automaticamente.
 
-Conecte-se ao PostgreSQL e execute os scripts na ordem:
+Para recriar manualmente a base existente, rode os comandos a partir da pasta `backend`. Isso apaga os dados atuais:
 
 ```bash
-# Com psql (ou qualquer cliente PostgreSQL)
-psql -h localhost -U root -d SGEA -f src/data/DATABASE.sql
-psql -h localhost -U root -d SGEA -f src/data/POPULATION.sql
+docker exec -i postgres_db psql -U root -d SGEA < src/data/DATABASE.sql
+docker exec -i postgres_db psql -U root -d SGEA < src/data/POPULATION.sql
 ```
 
-Ou habilite a extensão `pgcrypto` antes de popular:
+### 3. Configurar variáveis de ambiente
 
-```sql
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-```
-
-### 4. Configurar variáveis de ambiente
-
-Crie o arquivo `backend/.env` (já existe por padrão):
+O arquivo `backend/.env` já contém os valores locais para conectar ao Docker:
 
 ```env
 PORT=3333
@@ -102,30 +94,42 @@ PG_DBNAME=SGEA
 PG_HOST=localhost
 PG_USERNAME=root
 PG_PASSWORD=
-PG_PORT=5432
+PG_PORT=5431
 JWT_SECRET=SGEA_jwt_secret_key_2026
 JWT_EXPIRES_IN=24h
 ```
 
-### 5. Instalar dependências e rodar o backend
+### 4. Instalar dependências e rodar o backend
+
+Em um terminal:
 
 ```bash
-cd backend
-npm install
-npm run dev
+cd backend && npm install && npm run dev
 ```
 
-Servidor disponível em `http://localhost:3333`
+API disponível em `http://localhost:3333/api`.
 
-### 6. Instalar dependências e rodar o frontend
+### 5. Instalar dependências e rodar o frontend
+
+Em outro terminal:
 
 ```bash
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
 
-Frontend disponível em `http://localhost:5173` (proxy `/api` → backend na porta 3333)
+Frontend disponível em `http://localhost:5173`. A variável `VITE_API_URL` aponta para a API na porta 3333.
+
+### Credenciais de teste
+
+Use este usuário de demonstração para entrar:
+
+| Campo | Valor |
+| ----- | ----- |
+| E-mail | `usuario1@gmail.com` |
+| Senha | `1234` |
+| Perfil | Participante |
+
+O seed também cria `usuario2@gmail.com` até `usuario50@gmail.com`, todos com a mesma senha `1234`.
 
 ## Papéis de Usuário
 

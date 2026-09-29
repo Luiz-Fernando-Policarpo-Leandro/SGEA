@@ -3,8 +3,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const UrlDatabase = `postgresql://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}/${process.env.PG_DATABASE}?sslmode=verify-full&channel_binding=${process.env.PG_CHANNELBINDING}`
-
 export const pool = new Pool({
-  connectionString: UrlDatabase
+  host: process.env.PG_HOST || "localhost",
+  port: Number(process.env.PG_PORT || 5432),
+  user: process.env.PG_USER || process.env.PG_USERNAME,
+  password: process.env.PG_PASSWORD || "",
+  database: process.env.PG_DATABASE || process.env.PG_DBNAME,
+  ssl: false,
 });
